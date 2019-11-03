@@ -10,7 +10,8 @@ public class CelulaSexuata extends Celula {
 	public static int nr_celule_sexuate=0;
 
 	protected void inmulteste() {
-		new Thread(new CelulaSexuata()).start();
+		Thread c1 = new Thread(new CelulaAsexuata());
+		c1.start();
 	}
 
 	@Override
@@ -18,6 +19,8 @@ public class CelulaSexuata extends Celula {
 		// TODO Auto-generated method stub
 		
 		MainConsole.celuleSexuate.add(Thread.currentThread());
+		
+		System.out.println("Celula Sexuata: "+nr_celule_sexuate);
 		
 		while (nr_celule_sexuate<30) {
 			mananca();

@@ -8,11 +8,11 @@ public class CelulaAsexuata extends Celula {
 
 	public void inmulteste() {
 		Thread c1 = new Thread(new CelulaAsexuata());
-		MainConsole.celuleAsexuate.add(c1);
+		//MainConsole.celuleAsexuate.add(c1);
 		c1.start();
 
 		Thread c2 = new Thread(new CelulaAsexuata());
-		MainConsole.celuleAsexuate.add(c2);
+		//MainConsole.celuleAsexuate.add(c2);
 		c2.start();
 
 		try {
@@ -28,6 +28,8 @@ public class CelulaAsexuata extends Celula {
 	public void run() {
 		
 		MainConsole.celuleAsexuate.add(Thread.currentThread());
+		
+		System.out.println("Celula Asexuata: "+nr_celule_asexuate);
 		
 		// TODO Auto-generated method stub
 		while (nr_celule_asexuate<30) {
