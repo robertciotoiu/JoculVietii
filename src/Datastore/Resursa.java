@@ -17,7 +17,8 @@ public class Resursa {
 	
 	public static void decrementHrana()
 	{
-		hrana--;
+		if(hrana>0)
+			hrana--;
 	}
 	
 	public static int nrHrana()

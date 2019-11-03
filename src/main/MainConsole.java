@@ -13,7 +13,6 @@ public class MainConsole {
 	
 	public static void main(String[] args)
 	{
-		//concurent list
 		
 		Resursa resursa = new Resursa(100);
 		
@@ -22,8 +21,11 @@ public class MainConsole {
 		celulaAsexuata.start();
 		
 		
-		Thread celulaSexuata = new Thread(new CelulaSexuata());
-		celulaSexuata.start();
+		Thread celulaSexuata1 = new Thread(new CelulaSexuata());
+		celulaSexuata1.start();
+		Thread celulaSexuata2 = new Thread(new CelulaSexuata());
+		celulaSexuata2.start();
+
 //		celuleSexuate.add(celulaSexuata);
 	
 		

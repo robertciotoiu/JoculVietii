@@ -4,7 +4,7 @@ import main.MainConsole;
 
 public class CelulaAsexuata extends Celula {
 	
-	public static int nr_celule_asexuate=0;
+	//public static int nr_celule_asexuate=1;
 
 	public void inmulteste() {
 		Thread c1 = new Thread(new CelulaAsexuata());
@@ -15,29 +15,32 @@ public class CelulaAsexuata extends Celula {
 		//MainConsole.celuleAsexuate.add(c2);
 		c2.start();
 
-		try {
+		
 			MainConsole.celuleAsexuate.remove(Thread.currentThread());
-			this.finalize();
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			try {
+				Thread.sleep(0);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			nr_celule--;
+		
 	}
 
 	@Override
 	public void run() {
 		
-		MainConsole.celuleAsexuate.add(Thread.currentThread());
+		while(Resursa.nrHrana()>0)
+		{
+			MainConsole.celuleAsexuate.add(Thread.currentThread());
+			System.out.println("Celula Asexuata: "+Resursa.nrHrana() + "Thread:"+Thread.currentThread().getId()+ "Celule: "+ nr_celule);
 		
-		System.out.println("Celula Asexuata: "+nr_celule_asexuate);
+			// TODO Auto-generated method stub
 		
-		// TODO Auto-generated method stub
-		while (nr_celule_asexuate<30) {
 			mananca();
-			count_food_eaten++;
-			if (count_food_eaten >= 10) {
+			if (count_food_eaten.get() >= 10) {
 				inmulteste();
-				nr_celule_asexuate++;
+				nr_celule++;
 			}
 		}
 

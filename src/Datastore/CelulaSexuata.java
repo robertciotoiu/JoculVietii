@@ -7,7 +7,7 @@ import main.MainConsole;
 
 public class CelulaSexuata extends Celula {
 	
-	public static int nr_celule_sexuate=0;
+	//public static int nr_celule_sexuate=1;
 
 	protected void inmulteste() {
 		Thread c1 = new Thread(new CelulaAsexuata());
@@ -18,24 +18,42 @@ public class CelulaSexuata extends Celula {
 	public void run() {
 		// TODO Auto-generated method stub
 		
-		MainConsole.celuleSexuate.add(Thread.currentThread());
+		while(Resursa.nrHrana()>0)
+		{
+			MainConsole.celuleSexuate.add(Thread.currentThread());
 		
-		System.out.println("Celula Sexuata: "+nr_celule_sexuate);
+			System.out.println("Celula Sexuata: "+Resursa.nrHrana() + " Thread:"+Thread.currentThread().getId()+" Celule: "+ nr_celule);
 		
-		while (nr_celule_sexuate<30) {
 			mananca();
-			count_food_eaten++;
-			if (count_food_eaten >= 10) {
-				find_partner();
-				nr_celule_sexuate++;
+			
+			if (count_food_eaten.get() >= 10) {
+				
+				try {
+					find_partner();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				nr_celule++;
 			}
 		}
+		
 	}
 
-	private synchronized void find_partner() {
-//		Set<Thread> threads = Thread.getAllStackTraces().keySet();
-		for (Thread t : MainConsole.celuleSexuate) {
-			
-		}
+	private synchronized void find_partner() throws InterruptedException {
+		
+		boolean foundPartner=false;
+		for(Thread t: MainConsole.celuleSexuate)
+			if(t.getState().equals(Thread.State.WAITING))
+			{	
+				notify();
+				inmulteste();
+				foundPartner=true;
+			}
+		
+		if(!foundPartner)
+			wait();
 	}
+		
+	
 }
