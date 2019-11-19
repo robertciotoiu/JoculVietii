@@ -15,15 +15,16 @@ public class CelulaAsexuata extends Celula {
 		//MainConsole.celuleAsexuate.add(c2);
 		c2.start();
 
+		Thread.currentThread().interrupt();
 		
-			MainConsole.celuleAsexuate.remove(Thread.currentThread());
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			nr_celule--;
+//					MainConsole.celuleAsexuate.remove(Thread.currentThread());
+//					try {
+//						Thread.sleep(0);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					nr_celule--;
 		
 	}
 
@@ -37,10 +38,13 @@ public class CelulaAsexuata extends Celula {
 		
 			// TODO Auto-generated method stub
 		
-			mananca();
-			if (count_food_eaten.get() >= 10) {
-				inmulteste();
-				nr_celule++;
+			if(!Thread.currentThread().isInterrupted())
+			{
+				mananca();
+				if (count_food_eaten.get() >= 10) {
+					inmulteste();
+					nr_celule++;
+				}
 			}
 		}
 

@@ -24,17 +24,20 @@ public class CelulaSexuata extends Celula {
 		
 			System.out.println("Celula Sexuata: "+Resursa.nrHrana() + " Thread:"+Thread.currentThread().getId()+" Celule: "+ nr_celule);
 		
-			mananca();
-			
-			if (count_food_eaten.get() >= 10) {
+			if(!Thread.currentThread().isInterrupted())
+			{	
+				mananca();
 				
-				try {
-					find_partner();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if (count_food_eaten.get() >= 10) {
+					
+					try {
+						find_partner();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					nr_celule++;
 				}
-				
-				nr_celule++;
 			}
 		}
 		

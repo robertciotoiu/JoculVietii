@@ -27,7 +27,7 @@ public abstract class Celula implements Runnable{
 	protected void mananca()
 	{
 		synchronized(lock)
-		{
+        {
 			if(full == true)
 			{
 				try {
@@ -36,8 +36,8 @@ public abstract class Celula implements Runnable{
 						e.printStackTrace();
 					}
 			}
-		}
 		
+        }
         startTime = System.currentTimeMillis();
         
         System.out.println(Resursa.nrHrana());
@@ -77,14 +77,7 @@ public abstract class Celula implements Runnable{
 	{
 		Random r = new Random();
 		Resursa.adaugaHrana(r.nextInt(5));
-		try {
-			Thread.sleep(0);
-			nr_celule--;
-			
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Thread.currentThread().interrupt();
 	}
 	
 	private synchronized void actualEating()
