@@ -9,19 +9,19 @@ public class Resursa {
 		this.hrana=hrana;
 	}
 	
-	public static void adaugaHrana(int new_hrana)
+	public synchronized static void adaugaHrana(int new_hrana)
 	{
 		hrana = hrana + new_hrana;
 		
 	}
 	
-	public static void decrementHrana()
+	public synchronized static void decrementHrana()
 	{
 		if(hrana>0)
 			hrana--;
 	}
 	
-	public static int nrHrana()
+	public synchronized static int nrHrana()
 	{
 		return hrana;
 	}

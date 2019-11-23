@@ -6,93 +6,85 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class Celula implements Runnable{
-	
+import logging.LoggerClass;
+import main.MainConsole;
+
+public abstract class Celula implements Runnable {
+	protected String className = null;
+	protected LoggerClass log = new LoggerClass(MainConsole.logsLocation);
+	protected int untilFull = 10;
+
 	final Lock lock = new ReentrantLock();
-	private long T_Full = 2000;//wait
-	private boolean full = false;
-	private long T_Starve = 5;//try to eat and this is the time he has until he die
+	protected long T_Full = 2000000000L;// wait 2 seconds
+	protected boolean full = false;
+	private long T_Starve = 5000000000L;// try to eat and this is the time he has until he die (5 seconds)
+
+	static protected AtomicInteger nr_celule = new AtomicInteger(0);
+
+	protected AtomicInteger count_food_eaten = new AtomicInteger(0);
+
+	protected long startTime = System.nanoTime();
 	
-	public static int nr_celule=0;
-	
-	protected AtomicInteger count_food_eaten= new AtomicInteger(0);
-	
-	private long startTime;
-	
-	public Celula()
-	{
-		nr_celule++;
+	public Celula() {
+//		log = new LoggerClass(MainConsole.logsLocation);
+		if(this instanceof CelulaAsexuata)
+		{
+			className = CelulaAsexuata.class.getSimpleName();
+		}
+		else if(this instanceof CelulaSexuata)
+		{
+			className = CelulaSexuata.class.getSimpleName();
+		}
+		
+		nr_celule.incrementAndGet();
 	}
-	
-	protected void mananca()
-	{
-		synchronized(lock)
-        {
-			if(full == true)
-			{
-				try {
-					lock.wait(T_Full);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+
+	protected void mananca() {
+		log.log(className,String.valueOf(Thread.currentThread().getId()),"RESURSE: "+ Resursa.nrHrana());
+		if(T_Full - (System.nanoTime()-startTime)>0)
+		{
+			try {
+				Thread.sleep((T_Full - (System.nanoTime()-startTime))/1000000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		
-        }
-        startTime = System.currentTimeMillis();
-        
-        System.out.println(Resursa.nrHrana());
-        
-        synchronized(lock)
-        {
-        	while(Resursa.nrHrana()==0)
-        	{
-			
-        		startTime++;
-        		System.out.println("Thread: "+Thread.currentThread().getId());
-        		System.out.println(Resursa.nrHrana());
-        		//try {
-        			//wait();
-        			//System.out.println("Current Time:" + System.currentTimeMillis());
-        			//System.out.println("Start Time:" + startTime);
-        			//long time = (System.currentTimeMillis() - startTime)/1000;
-        			//System.out.println("Time: " + time);
-        			if(startTime/1000 >= T_Starve)
-        			{
-        				killCell();
-        				break;
-        			}
-				
-        		//} catch (InterruptedException e) {
-        			//e.printStackTrace();
-        		//}
-			
-        	}
-        
-		
-        	actualEating();
-        }
+		}
+		startTime = System.nanoTime();
+
+		while (Resursa.nrHrana() == 0) {
+			if (System.nanoTime() - startTime >= T_Starve) {
+				System.out.println("Thread: " + String.valueOf(Thread.currentThread().getId()) + " died");
+				killCell();
+				break;
+			} else {
+//				System.out.println("Difference: " + ((double)(System.nanoTime() - startTime))/1000000000.0);
+			}
+		}
+		lock.lock();
+		actualEating();
+		lock.unlock();
 	}
-	
-	private void killCell()
-	{
+
+	protected void killCell() {
 		Random r = new Random();
 		Resursa.adaugaHrana(r.nextInt(5));
+		nr_celule.decrementAndGet();
 		Thread.currentThread().interrupt();
 	}
-	
-	private synchronized void actualEating()
-	{
-		if((startTime -  System.currentTimeMillis())/1000 > T_Starve)
-		{
+
+	private void actualEating() {
+		
+		if (System.nanoTime() - startTime >= T_Starve) {
+			System.out.println("Thread: " + String.valueOf(Thread.currentThread().getId()) + " DIED");
 			killCell();
-		}
-		else {
+		} else {
+			System.out.println("Thread: " + String.valueOf(Thread.currentThread().getId()) + " EATS");
 			Resursa.decrementHrana();
 			count_food_eaten.incrementAndGet();
-			full=true;
-			notifyAll();
+			full = true;
+			startTime = System.nanoTime();
 		}
 	}
-	
+
 	protected abstract void inmulteste();
 }

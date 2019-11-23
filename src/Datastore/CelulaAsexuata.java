@@ -3,50 +3,36 @@ package Datastore;
 import main.MainConsole;
 
 public class CelulaAsexuata extends Celula {
-	
-	//public static int nr_celule_asexuate=1;
+
+	public CelulaAsexuata() {
+		super();
+	}
 
 	public void inmulteste() {
 		Thread c1 = new Thread(new CelulaAsexuata());
-		//MainConsole.celuleAsexuate.add(c1);
 		c1.start();
+		
 
 		Thread c2 = new Thread(new CelulaAsexuata());
-		//MainConsole.celuleAsexuate.add(c2);
 		c2.start();
 
 		Thread.currentThread().interrupt();
-		
-//					MainConsole.celuleAsexuate.remove(Thread.currentThread());
-//					try {
-//						Thread.sleep(0);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					nr_celule--;
-		
 	}
 
 	@Override
 	public void run() {
+		MainConsole.celuleAsexuate.add(Thread.currentThread());
+		log.log(className,String.valueOf(Thread.currentThread().getId()),"CREATED");
 		
-		while(Resursa.nrHrana()>0)
-		{
-			MainConsole.celuleAsexuate.add(Thread.currentThread());
-			System.out.println("Celula Asexuata: "+Resursa.nrHrana() + "Thread:"+Thread.currentThread().getId()+ "Celule: "+ nr_celule);
-		
-			// TODO Auto-generated method stub
-		
-			if(!Thread.currentThread().isInterrupted())
-			{
-				mananca();
-				if (count_food_eaten.get() >= 10) {
-					inmulteste();
-					nr_celule++;
-				}
+		while (!Thread.currentThread().isInterrupted()) {
+			System.out
+					.println("Celula Asexuata: " +Thread.currentThread().getId()+" food eaten: "+ this.count_food_eaten);
+			mananca();
+			if (!Thread.currentThread().isInterrupted() && count_food_eaten.get() >= untilFull) {
+				inmulteste();
 			}
 		}
-
+		
+		log.log(className,String.valueOf(Thread.currentThread().getId()),"DIED");
 	}
 }
